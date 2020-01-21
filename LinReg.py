@@ -43,7 +43,7 @@ print(pct_ret[tick_list])
 x = pct_ret[tick_list]
 
 print(type(x))
-slr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((pct_ret[tick_list[map(lambda x: )]]))))).fit()
+slr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((map(lambda x: pct_ret[x,tick_list])))))).fit()
 #slr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack((pct_ret[tick_list[asset_pos]],pct_ret[tick_list[1]])))).fit()
 
 #print(slr.summary())

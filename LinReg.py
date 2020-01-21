@@ -1,5 +1,5 @@
 """
-This program uses a multiple linear regression to study the effects of individual stocks on the overall market
+This program uses a multiple linear regression to study the effects of individual stocks on the overall market index
 """
 
 import numpy as np
@@ -11,39 +11,24 @@ import datetime as dt
 from datetime import timedelta as td
 import matplotlib.pyplot as plt
 
+# datetime.now() - always updates when run for the past 1000 days
 end = dt.datetime.now()
 start = end - td(days=999)
-# stores the users tickers in a list - independent variable
+# stores the users tickers in a list - which are used as independent variables in regression
 tick_list = np.array(str(input('Enter tickers: ')).upper().split())
-#print(tick_list)
-# creating benchmark index - dependent variable
+# creating benchmark index - returns used for dependent variable for regression
 benTik = [str(input('Enter ticker of benchmark index: ')).upper()]
-#print(benTik)
 bench = wb.DataReader(benTik, 'yahoo', start, end)['Adj Close']
-#print(bench)
-# returns of benchmark index
+# percent returns of benchmark index -- dependent variable
 bench_ret = bench.pct_change().dropna()
-#print(bench_ret)
-# data frame where ticker data will be stored
+# data frame where ticker (independent variable) data will be stored
 df = pd.DataFrame()
+# stores adjusted close for each ticker entered in tick_list in dataframe
 for t in tick_list:
     df[t] = wb.DataReader(t, 'yahoo', start, end)['Adj Close']
+# calculates percent return of each ticker that is stored in data frame
 pct_ret = df.pct_change().dropna()
-#print(pct_ret)
-#print(pct_ret)
-#df2 = pd.DataFrame(pct_ret)
-#print(df2)
-#for t in tick_list:
-
-index = 0
-asset_pos = index
-print(tick_list[0:2])
-print(pct_ret[tick_list])
-
 x = pct_ret[tick_list]
-
-print(type(x))
-slr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((map(lambda x: pct_ret[x,tick_list])))))).fit()
-#slr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack((pct_ret[tick_list[asset_pos]],pct_ret[tick_list[1]])))).fit()
-
-#print(slr.summary())
+# runs regression - lambda used to index percent return by each position in tick_list
+mlr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((map(lambda x: pct_ret[x],tick_list)))))).fit()
+print(mlr.summary())

@@ -6,7 +6,10 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from statsmodels import regression
+import statsmodels.stats.diagnostic as smd
+import scipy.stats as stats
 import pandas_datareader.data as wb
+import math as m
 import datetime as dt
 from datetime import timedelta as td
 import matplotlib.pyplot as plt
@@ -38,8 +41,14 @@ pct_ret = df.pct_change().dropna()
 x = pct_ret[tick_list]
 
 # runs regression - lambda used to index percent return by each position in tick_list
+# maybe I should run a heteroscedasticity model - non-constant variance
 mlr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((map(lambda x: pct_ret[x],tick_list)))))).fit()
 # print(mlr.summary())
+
+# prediction line for regression
+# prediction = mlr.params[0] + mlr.params[1]*pct_ret[0] + mlr.params[2]*pct_ret[1] + mlr.params[3]*pct_ret[2]
+# Regression Analysis - residuals and errors
+residuals = mlr.resid
 
 # graphing regression -- returns of independent and dependent variables
 for t in tick_list:

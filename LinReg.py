@@ -10,6 +10,7 @@ import pandas_datareader.data as wb
 import datetime as dt
 from datetime import timedelta as td
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 # datetime.now() - always updates when run for the past 1000 days
 end = dt.datetime.now()
@@ -38,5 +39,14 @@ x = pct_ret[tick_list]
 
 # runs regression - lambda used to index percent return by each position in tick_list
 mlr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((map(lambda x: pct_ret[x],tick_list)))))).fit()
-print(mlr.summary())
+# print(mlr.summary())
 
+# graphing regression -- returns of independent and dependent variables
+for t in tick_list:
+    plt.plot(pct_ret[tick_list], label=tick_list)
+
+plt.plot(bench_ret)
+plt.xlabel('Date')
+plt.ylabel('Percent Returns')
+plt.legend(bbox_to_anchor=(1.05,1), loc= 'upper left', borderaxespad=0)
+plt.show()

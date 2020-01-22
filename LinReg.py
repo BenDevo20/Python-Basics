@@ -43,18 +43,21 @@ x = pct_ret[tick_list]
 # runs regression - lambda used to index percent return by each position in tick_list
 # maybe I should run a heteroscedasticity model - non-constant variance
 mlr = regression.linear_model.OLS(bench_ret,sm.add_constant(np.column_stack(((map(lambda x: pct_ret[x],tick_list)))))).fit()
-# print(mlr.summary())
-
+print(mlr.summary())
+#print(mlr.params[1]*pct_ret[tick_list[0]])
 # prediction line for regression
-# prediction = mlr.params[0] + mlr.params[1]*pct_ret[0] + mlr.params[2]*pct_ret[1] + mlr.params[3]*pct_ret[2]
+prediction = mlr.params[0] + mlr.params[1]*pct_ret[tick_list[0]] + mlr.params[2]*pct_ret[tick_list[1]] + mlr.params[3]*pct_ret[tick_list[2]]
+print(prediction)
+
 # Regression Analysis - residuals and errors
-residuals = mlr.resid
+#residuals = mlr.resid
 
 # graphing regression -- returns of independent and dependent variables
 for t in tick_list:
     plt.plot(pct_ret[tick_list], label=tick_list)
 
 plt.plot(bench_ret)
+plt.plot(prediction)
 plt.xlabel('Date')
 plt.ylabel('Percent Returns')
 plt.legend(bbox_to_anchor=(1.05,1), loc= 'upper left', borderaxespad=0)
